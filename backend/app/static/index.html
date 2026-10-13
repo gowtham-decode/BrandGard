@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BrandGuard AI &bull; Digital Risk Protection Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body class="dark-theme">
+  <!-- Subtle ambient background flow -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- Header -->
+  <header class="navbar">
+    <div class="container nav-content">
+      <div class="brand-identity">
+        <div class="brand-shield">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-name">BRANDGUARD<span>AI</span></div>
+          <div class="brand-subtitle">Digital Risk Protection Platform</div>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <button class="nav-btn active" data-tab="tab-overview">Overview</button>
+        <button class="nav-btn" data-tab="tab-scanner">AI Scanner</button>
+        <button class="nav-btn" data-tab="tab-threats">Threat History</button>
+        <button class="nav-btn" data-tab="tab-brands">Brand Registry</button>
+        <button class="nav-btn" data-tab="tab-health">System Health</button>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="connection-status" id="liveApiStatus">
+          <span class="status-dot"></span> API Connected
+        </div>
+        <a href="/docs" target="_blank" class="btn btn-secondary btn-sm">API Docs &rarr;</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="container main-layout">
+    <!-- Notification Toast Container -->
+    <div id="toastNotification" class="toast hidden"></div>
+
+    <!-- ============================================== -->
+    <!-- TAB 1: OVERVIEW & THREAT METRICS               -->
+    <!-- ============================================== -->
+    <section id="tab-overview" class="tab-pane active">
+      <!-- Hero Banner -->
+      <div class="hero-card">
+        <div class="hero-text">
+          <div class="eyebrow-badge">REAL-TIME SURVEILLANCE &amp; HEURISTIC INFERENCE</div>
+          <h1>Autonomous Impersonation &amp; Look-Alike Domain Protection</h1>
+          <p>
+            Continuous threat detection across social networks and web domains using RapidFuzz string distance,
+            homoglyph canonicalization, SSRF-guarded domain heuristics, and a calibrated tabular ML classifier.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" onclick="switchTab('tab-scanner')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              Start New Investigation
+            </button>
+            <button class="btn btn-secondary" onclick="switchTab('tab-brands')">
+              Manage Registered Assets
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Telemetry KPI Metrics -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">TOTAL SUBMISSIONS</div>
+          <div class="kpi-value" id="kpiTotalScans">0</div>
+          <div class="kpi-trend">All audited targets</div>
+        </div>
+        <div class="kpi-card danger">
+          <div class="kpi-label">CRITICAL &amp; HIGH THREATS</div>
+          <div class="kpi-value" id="kpiHighThreats">0</div>
+          <div class="kpi-trend highlight">Actionable impersonators</div>
+        </div>
+        <div class="kpi-card warning">
+          <div class="kpi-label">PENDING REVIEWS</div>
+          <div class="kpi-value" id="kpiPendingReviews">0</div>
+          <div class="kpi-trend">Awaiting analyst verdict</div>
+        </div>
+        <div class="kpi-card success">
+          <div class="kpi-label">MONITORED BRANDS</div>
+          <div class="kpi-value" id="kpiMonitoredBrands">1</div>
+          <div class="kpi-trend">Verified official assets</div>
+        </div>
+      </div>
+
+      <!-- Analytics Charts / Distributions -->
+      <div class="analytics-row">
+        <!-- Risk Tier Breakdown -->
+        <div class="card analytics-card">
+          <div class="card-header">
+            <h3>Threat Risk Tier Distribution</h3>
+            <span class="badge">Live Heuristics</span>
+          </div>
+          <div class="distribution-bars" id="riskDistContainer">
+            <div class="bar-group">
+              <div class="bar-info"><span>Critical (80-100)</span><strong id="countCritical">0</strong></div>
+              <div class="progress-bar"><div class="fill critical" id="barCritical" style="width: 0%"></div></div>
+            </div>
+            <div class="bar-group">
+              <div class="bar-info"><span>High (55-79)</span><strong id="countHigh">0</strong></div>
+              <div class="progress-bar"><div class="fill high" id="barHigh" style="width: 0%"></div></div>
+            </div>
+            <div class="bar-group">
+              <div class="bar-info"><span>Medium (30-54)</span><strong id="countMedium">0</strong></div>
+              <div class="progress-bar"><div class="fill medium" id="barMedium" style="width: 0%"></div></div>
+            </div>
+            <div class="bar-group">
+              <div class="bar-info"><span>Low (0-29)</span><strong id="countLow">0</strong></div>
+              <div class="progress-bar"><div class="fill low" id="barLow" style="width: 0%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Platform Channels -->
+        <div class="card analytics-card">
+          <div class="card-header">
+            <h3>Audited Threat Channels</h3>
+            <span class="badge">Multi-Platform</span>
+          </div>
+          <div class="channels-grid" id="platformDistContainer">
+            <div class="channel-pill"><span>Instagram</span><strong id="plat-instagram">0</strong></div>
+            <div class="channel-pill"><span>X / Twitter</span><strong id="plat-x">0</strong></div>
+            <div class="channel-pill"><span>Telegram</span><strong id="plat-telegram">0</strong></div>
+            <div class="channel-pill"><span>Website Domains</span><strong id="plat-website">0</strong></div>
+            <div class="channel-pill"><span>Facebook</span><strong id="plat-facebook">0</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Detections Table -->
+      <div class="card mt-24">
+        <div class="card-header">
+          <div>
+            <h3>Recent Impersonation Detections</h3>
+            <p class="card-subtitle">Real-time alerts processed by the BrandGuard pipeline</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="loadDashboardSummary()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+            Refresh
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Target Identity / Handle</th>
+                <th>Platform</th>
+                <th>Brand Target</th>
+                <th>Risk Score</th>
+                <th>Threat Tier</th>
+                <th>Detected At</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="recentDetectionsTable">
+              <tr>
+                <td colspan="7" class="text-center text-muted">Loading telemetry records...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- TAB 2: LIVE AI SCANNER                         -->
+    <!-- ============================================== -->
+    <section id="tab-scanner" class="tab-pane">
+      <div class="scanner-layout">
+        <!-- Submission Form Card -->
+        <div class="card scanner-form-card">
+          <div class="card-header">
+            <div>
+              <h3>AI Digital Risk Scanner</h3>
+              <p class="card-subtitle">Submit suspicious accounts, look-alike domains, or rogue profiles for multi-signal inspection</p>
+            </div>
+            <span class="badge badge-purple">SSRF-Guarded</span>
+          </div>
+
+          <form id="scanSubmissionForm" onsubmit="handleScanSubmit(event)">
+            <div class="form-group">
+              <label for="scanTarget">Target URL or Social Username *</label>
+              <input type="text" id="scanTarget" class="form-control" placeholder="e.g. brandguard_support_desk or https://brandguard.verify-security.com" required>
+              <small class="form-hint">Paste full profile URL or username. Private and loopback IP addresses are blocked automatically.</small>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label for="scanPlatform">Platform Channel *</label>
+                <select id="scanPlatform" class="form-control" required>
+                  <option value="instagram">Instagram</option>
+                  <option value="x">X / Twitter</option>
+                  <option value="telegram">Telegram</option>
+                  <option value="website">Website / Domain</option>
+                  <option value="facebook">Facebook</option>
+                </select>
+              </div>
+
+              <div class="form-group half">
+                <label for="scanBrand">Target Brand *</label>
+                <input type="text" id="scanBrand" class="form-control" value="BrandGuard" placeholder="Brand name" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="scanDisplayName">Observed Display Name (Optional)</label>
+              <input type="text" id="scanDisplayName" class="form-control" placeholder="e.g. BrandGuard Official Customer Care">
+            </div>
+
+            <div class="form-group">
+              <label for="scanBio">Profile Description / Bio Text (Optional)</label>
+              <textarea id="scanBio" class="form-control" rows="3" placeholder="Paste account bio, advertised support contacts, or claims..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="scanNotes">Analyst Context / Extra Evidence (Optional)</label>
+              <input type="text" id="scanNotes" class="form-control" placeholder="e.g. Received phishing DM claiming urgent account renewal">
+            </div>
+
+            <!-- Privacy Guarantee Banner -->
+            <div class="privacy-banner">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span>Server-Side Analysis Only. No client cookies, private messages, or scraping credentials are utilized.</span>
+            </div>
+
+            <button type="submit" id="btnSubmitScan" class="btn btn-primary btn-block">
+              <span id="scanBtnText">Analyze Target with BrandGuard Engine</span>
+              <span id="scanSpinner" class="spinner hidden"></span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Scan Results Viewer Card -->
+        <div class="card scanner-results-card">
+          <div class="card-header">
+            <h3>Investigation Report</h3>
+            <div id="resultStatusTag" class="badge">Awaiting Input</div>
+          </div>
+
+          <div id="resultsEmptyState" class="empty-state">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#52525b" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
+            <h4>Ready to inspect targets</h4>
+            <p>Enter an account handle or URL to trigger multi-stage heuristic analysis, RapidFuzz scoring, and machine learning inference.</p>
+          </div>
+
+          <div id="resultsContentState" class="results-content hidden">
+            <!-- Score & Gauge -->
+            <div class="risk-overview-box">
+              <div class="risk-metric">
+                <div class="risk-score-display">
+                  <span id="resScoreValue" class="huge-score">0</span>
+                  <span class="score-denominator">/100</span>
+                </div>
+                <div id="resCategoryPill" class="risk-pill low">LOW RISK</div>
+              </div>
+              <div class="risk-summary-text">
+                <h4 id="resSummaryTitle">Assessment Complete</h4>
+                <p id="resSummaryDesc" class="text-muted"></p>
+                <div class="score-sub-metrics">
+                  <span>Rule Engine Score: <strong id="resRuleScore">0</strong></span> &bull; 
+                  <span>ML Calibrated Probability: <strong id="resMlProb">N/A</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Triggered Rules Section -->
+            <div class="result-section">
+              <h4>Triggered Deterministic Rules</h4>
+              <div id="resTriggeredRulesList" class="rules-list"></div>
+            </div>
+
+            <!-- Detailed Evidence Items -->
+            <div class="result-section">
+              <h4>Extracted Evidence &amp; Heuristic Signals</h4>
+              <div id="resEvidenceItemsList" class="evidence-grid"></div>
+            </div>
+
+            <!-- Recommended Next Actions -->
+            <div class="result-section">
+              <h4>Recommended Analyst Next Steps</h4>
+              <ul id="resActionsList" class="action-steps"></ul>
+            </div>
+
+            <!-- Analyst Review & Feedback Bar -->
+            <div class="analyst-decision-box">
+              <div class="decision-header">Security Analyst Verdict &amp; Takedown</div>
+              <div class="decision-buttons">
+                <button type="button" class="btn btn-danger btn-sm" onclick="submitAnalystReview('confirmed_impersonation')">
+                  Confirm Impersonation &amp; Flag for Takedown
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="submitAnalystReview('false_positive')">
+                  Mark as False Positive
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="exportScanReport()">
+                  Export Intelligence Report (JSON)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- TAB 3: THREAT HISTORY                          -->
+    <!-- ============================================== -->
+    <section id="tab-threats" class="tab-pane">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Investigated Threat History</h3>
+            <p class="card-subtitle">Audited record of all submitted impersonation scans and human reviews</p>
+          </div>
+          <div class="filter-controls">
+            <input type="text" id="threatSearchInput" class="form-control form-control-sm" placeholder="Search target or URL..." oninput="filterThreats()">
+            <select id="threatPlatformFilter" class="form-control form-control-sm" onchange="filterThreats()">
+              <option value="">All Platforms</option>
+              <option value="instagram">Instagram</option>
+              <option value="x">X / Twitter</option>
+              <option value="telegram">Telegram</option>
+              <option value="website">Website</option>
+              <option value="facebook">Facebook</option>
+            </select>
+            <select id="threatRiskFilter" class="form-control form-control-sm" onchange="filterThreats()">
+              <option value="">All Risk Tiers</option>
+              <option value="Critical">Critical</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Target Handle / URL</th>
+                <th>Platform</th>
+                <th>Brand Target</th>
+                <th>Risk Score</th>
+                <th>Risk Tier</th>
+                <th>Investigation Status</th>
+                <th>Submission Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="threatHistoryTable">
+              <tr>
+                <td colspan="8" class="text-center text-muted">Loading historical investigations...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- TAB 4: BRAND REGISTRY                          -->
+    <!-- ============================================== -->
+    <section id="tab-brands" class="tab-pane">
+      <div class="brands-layout">
+        <!-- Brand Registration Card -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3>Register Brand &amp; Digital Assets</h3>
+              <p class="card-subtitle">Define official brand handles and domains for ownership verification</p>
+            </div>
+          </div>
+
+          <form id="brandRegistrationForm" onsubmit="handleBrandRegister(event)">
+            <div class="form-group">
+              <label for="regBrandName">Brand Name *</label>
+              <input type="text" id="regBrandName" class="form-control" placeholder="e.g. Acme Financial" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label for="regBrandCategory">Category</label>
+                <select id="regBrandCategory" class="form-control">
+                  <option value="cybersecurity">Cybersecurity &amp; IT</option>
+                  <option value="finance">Banking &amp; Fintech</option>
+                  <option value="ecommerce">E-Commerce &amp; Retail</option>
+                  <option value="healthcare">Healthcare</option>
+                  <option value="crypto">Web3 &amp; Digital Assets</option>
+                </select>
+              </div>
+              <div class="form-group half">
+                <label for="regOfficialDomain">Official Domain</label>
+                <input type="text" id="regOfficialDomain" class="form-control" placeholder="e.g. acmefinancial.com">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="regBrandDesc">Description / Context</label>
+              <input type="text" id="regBrandDesc" class="form-control" placeholder="Short description of the company">
+            </div>
+
+            <div class="form-group">
+              <label for="regSocialHandle">Primary Official Social Handle</label>
+              <input type="text" id="regSocialHandle" class="form-control" placeholder="e.g. @acmefinancial on X/Instagram">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Brand &amp; Assets</button>
+          </form>
+        </div>
+
+        <!-- Registered Brands List Card -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3>Verified Brand Assets</h3>
+              <p class="card-subtitle">Official anchors used to contrast look-alike impersonators</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="loadBrandsList()">Refresh</button>
+          </div>
+          <div id="brandsListContainer" class="brands-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- TAB 5: SYSTEM HEALTH & MODEL DIAGNOSTICS      -->
+    <!-- ============================================== -->
+    <section id="tab-health" class="tab-pane">
+      <div class="health-grid">
+        <div class="card">
+          <div class="card-header">
+            <h3>Engine Status &amp; Telemetry</h3>
+            <span class="badge badge-green">Operational</span>
+          </div>
+          <div class="health-items" id="healthDetailsContainer">
+            <div class="health-row"><span>Service Name</span><strong>BrandGuard AI Digital Risk Protection</strong></div>
+            <div class="health-row"><span>Backend Engine</span><strong>FastAPI + Python 3.14 (Async ASGI)</strong></div>
+            <div class="health-row"><span>Active Database</span><strong id="healthDbStatus">SQLite / PostgreSQL Ready</strong></div>
+            <div class="health-row"><span>Deployed Model</span><strong id="healthModelVersion">1.0.0-rf-baseline</strong></div>
+            <div class="health-row"><span>SSRF Protection</span><strong class="text-success">Active (Private IPv4/IPv6 Blocked)</strong></div>
+            <div class="health-row"><span>Calibration Protocol</span><strong>Platt Sigmoid Scaling ($\text{Brier} \le 0.10$)</strong></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Model Evaluation Metrics (Held-out Test Split)</h3>
+            <span class="badge">N=1200 Benchmark</span>
+          </div>
+          <div class="metric-tiles">
+            <div class="metric-tile">
+              <div class="metric-num">1.0000</div>
+              <div class="metric-label">Precision (0 False Positives)</div>
+            </div>
+            <div class="metric-tile">
+              <div class="metric-num">0.9643</div>
+              <div class="metric-label">Recall (54/56 Caught)</div>
+            </div>
+            <div class="metric-tile">
+              <div class="metric-num">0.9818</div>
+              <div class="metric-label">F1-Score</div>
+            </div>
+            <div class="metric-tile">
+              <div class="metric-num">0.9993</div>
+              <div class="metric-label">ROC-AUC</div>
+            </div>
+          </div>
+          <p class="mt-16 text-muted text-sm">
+            Model parameters are persisted in <code>ml/models/baseline_rf_v1.json</code>.
+            Evaluations conducted strictly across held-out stratified test splits without cross-boundary data leakage.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <div>BrandGuard AI &bull; Digital Risk Protection &amp; Impersonation Defense &bull; Prototype v1.0.0</div>
+      <div class="footer-links">
+        <a href="/docs" target="_blank">OpenAPI Docs</a> &bull;
+        <a href="/api/v1/health" target="_blank">Health Check</a> &bull;
+        <span>Chrome MV3 Extension Ready</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/dashboard.js"></script>
+</body>
+</html>

@@ -1,114 +1,145 @@
-# BrandGuard — Brand Impersonation & Scam Defense Frontend
+# BrandGuard AI Digital Risk Protection Platform
 
-A demo-ready, explainable risk assessment frontend built for the **Kampus.VC challenge**. BrandGuard empowers registered brands to detect fake social-media profiles, lookalike websites, and counterfeit app listings impersonating their brand identity.
+BrandGuard is a human-reviewed Digital Risk Protection prototype for assessing analyst-submitted social profiles, websites, and app listings against registered brand assets. It does not continuously discover or monitor social accounts, and it has not been validated for real-world detection performance.
 
 ---
 
-## 1. Setup & Running Locally
+## 1. System Components
+1. **AI Detection Engine (`backend/app/detection/`, `ml/`)**:
+   - Normalized string similarity and token set matching via RapidFuzz.
+   - Homoglyph canonicalization (leetspeak, Cyrillic look-alikes).
+   - Domain and punycode (IDN homograph) structure analyzer.
+   - Server-Side Request Forgery (SSRF) defense blocking private and reserved IP addresses.
+   - Deterministic explainable rule engine with granular evidence items.
+   - Optional tabular classifier with sigmoid calibration; evaluation is synthetic-only and does not establish real-world accuracy or calibrated probabilities.
+2. **Backend API (`backend/app/`)**:
+   - FastAPI REST API with OpenAPI documentation at `/docs`.
+   - SQLite default for local Windows development, PostgreSQL ready for production.
+   - JWT authentication, password hashing (PBKDF2-HMAC-SHA256), and organization isolation.
+   - Comprehensive endpoints: `/auth`, `/brands`, `/scans`, `/dashboard`, `/health`.
+3. **Web Dashboard (`frontend/`)**:
+   - BrandGuard workspace using the FastAPI authentication, brand, scan, review, and history endpoints.
+   - Analyst-submitted social profiles and app listings; Apple public-catalog search is available on request, but social crawlers and Google Play search are not configured.
+4. **Browser Extension (`extension/`)**:
+   - Chrome Manifest V3 extension for one-click URL and active-tab inspection.
+   - Zero background tracking; only transmits user-submitted URLs upon explicit interaction.
+
+---
+
+## 2. Directory Structure
+```
+d:\BrandGard\
+├── backend/
+│   ├── app/
+│   │   ├── api/v1/         # Endpoints: auth, brands, scans, dashboard, health
+│   │   ├── core/           # Security, JWT, SSRF protection
+│   │   ├── database.py     # SQLAlchemy session & engine
+│   │   ├── detection/      # Normalizer, similarity, domain analysis, rules, risk engine
+│   │   ├── models/         # User, Org, Brand, Asset, Scan, RiskAssessment, Audit
+│   │   ├── schemas/        # Pydantic request & response schemas
+│   │   └── main.py         # FastAPI application entrypoint
+│   ├── tests/              # Pytest automated test suites
+│   ├── requirements.txt    # Python dependencies
+│   ├── .env.example        # Environment variable template
+│   └── Dockerfile          # Production container configuration
+├── ml/
+│   ├── data/               # Feature schema & dataset documentation
+│   ├── src/                # Feature engineering, model, train, evaluate, predict, calibrate
+│   ├── models/             # Trained baseline model & evaluation report
+│   └── tests/              # ML pipeline automated unit tests
+├── extension/              # Chrome Manifest V3 browser extension
+├── docs/                   # Architecture & Threat modeling guides
+├── docker-compose.yml      # Multi-container orchestration
+└── README.md
+```
+
+---
+
+## 3. Quick Start on Windows
 
 ### Prerequisites
-- Node.js >= 18
-- npm
+- Python 3.10+ (Tested on Python 3.14 on Windows 11)
 
-### Installation
-```bash
-npm install
-```
+### A. Backend Setup
+1. Open PowerShell and navigate to the project directory:
+   ```powershell
+   cd d:\BrandGard\backend
+   ```
+2. Activate the virtual environment:
+   ```powershell
+   .\.venv\Scripts\Activate.ps1
+   ```
+3. Install dependencies:
+   ```powershell
+   pip install -r requirements.txt
+   ```
+4. Start the backend server:
+   ```powershell
+   uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+   ```
+5. Access interactive Swagger documentation at:
+   **[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)**
 
-### Development Server
-```bash
-npm run dev
+### B. Frontend Setup
+Open a second PowerShell window:
+```powershell
+cd d:\BrandGard\frontend
+bun install
+bun run dev
 ```
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+Open **[http://127.0.0.1:8080](http://127.0.0.1:8080)**. The frontend uses the backend at `http://127.0.0.1:8000/api/v1` by default.
 
-### Production Build
-```bash
-npm run build
-npm run preview
-```
+### Current Demo Boundaries
+- Brand logo entry accepts a URL; binary upload storage is not configured.
+- Official assets are entered by an analyst. Website assets can be verified by publishing a DNS TXT challenge; social and app assets use analyst review, which does not independently prove ownership.
+- Social profiles and Google Play listings must be submitted manually; live social-network and Google Play integrations are not configured.
+- Apple App Store monitoring can search Apple's public catalog and import observed listing details for analysis. A catalog result is not proof that an app is official; it must still be reviewed against registered assets.
+- App publisher mismatch is a corroborating review signal only. Logo similarity, external listing availability, and automated takedowns are not implemented.
+- Scan history retains source-provenance metadata; Apple listing observation time is client-reported, not an immutable or independently authenticated evidence record.
+- Read the [architecture and evidence-flow documentation](docs/ARCHITECTURE.md) for implemented sources, trusted-asset exclusion, persistence, provenance limits, and future integrations.
+- Follow [the demo guide](docs/DEMO_GUIDE.md) for the walkthrough and sample cases; open the [demo slides](docs/demo-slides.html) in a browser for the presentation.
+
+### Demo Account
+Create an account through the sign-in page. To enable the seeded demo analyst,
+set a private `DEMO_ADMIN_PASSWORD` in `backend/.env`; the account email is
+`security@brandguard.io`. Never commit your `.env` file.
 
 ---
 
-## 2. React Bits Pro & Free Component Configuration
-
-### `components.json` Registry Configuration
-The React Bits Pro private registry configuration is located in `components.json`:
-
-```json
-{
-  "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "default",
-  "rsc": false,
-  "tsx": true,
-  "tailwind": {
-    "config": "tailwind.config.js",
-    "css": "src/index.css",
-    "baseColor": "slate",
-    "cssVariables": true
-  },
-  "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components/ui",
-    "lib": "@/lib",
-    "hooks": "@/hooks"
-  },
-  "registries": {
-    "@reactbits-pro": {
-      "url": "https://pro.reactbits.dev/registry",
-      "headers": {
-        "Authorization": "Bearer ${REACTBITS_LICENSE_KEY}"
-      }
-    }
-  }
-}
+## 4. Running Automated Tests
+From the repository root, run the backend API, detection, SSRF, and ML
+regression suites with the project virtual environment:
+```powershell
+.\backend\.venv\Scripts\python.exe -m pytest -v backend\tests ml\tests
 ```
+The backend tests cover:
+- Normalization & homoglyphs
+- SSRF private IP rejection
+- Rule-based detection & official match overrides
+- Authentication, organization isolation, asset verification, and scan lifecycle endpoints
+- Apple App Store search behavior and error handling
 
-### Install Commands for the Four Pro Blocks
-Set your `REACTBITS_LICENSE_KEY` environment variable, then run:
-
-```bash
-npx shadcn@latest add @reactbits-pro/app-sidebar-2
-npx shadcn@latest add @reactbits-pro/filtering-7
-npx shadcn@latest add @reactbits-pro/authentication-12
-npx shadcn@latest add @reactbits-pro/404-5
-```
-
-*Note: Custom adaptations conforming strictly to BrandGuard's design tokens and TypeScript models are pre-packaged directly in `src/components/pro/`.*
+The ML unit tests exercise feature extraction, the NumPy classifier, probability
+calibration, and inference. Feature preparation and model training use NumPy;
+Pandas and scikit-learn are not required.
 
 ---
 
-## 3. Where Each Animation Lives
-
-| Purpose | Component | File Path | Animation Mechanics |
-| :--- | :--- | :--- | :--- |
-| **Platform Selector** | `GlideSelect` | `src/components/free/GlideSelect.tsx` | Spring pill layout animation (`stiffness: 380, damping: 32`), keyboard navigation (Arrow keys, Enter, Esc), tags. |
-| **Analysis Header** | `LatticeLoader` | `src/components/free/LatticeLoader.tsx` | 3x3 orbit pulse pattern with real-time second timer; freezes and morphs into a green checkmark reading "Done in 1.8s". |
-| **Analysis Steps** | `CallChip` | `src/components/free/CallChip.tsx` | 3 sequential chips (*Search ID*, *Compare brand names*, *Match credentials*); width fill bar with millisecond counters, washes green upon completion, error retry state. |
-| **Watch Profile** | `BellToggle` | `src/components/free/BellToggle.tsx` | "Notify me" $\rightarrow$ "You'll be notified", swinging bell oscillation and ping sound wave ripples. |
-| **Icon Rail** | `AppSidebar2` | `src/components/pro/AppSidebar2.tsx` | Spring rail marker sliding between items; hover/focus flyout tooltips; mobile bottom bar responsive transformation under 820px. |
-| **Asset Gallery** | `Filtering7` | `src/components/pro/Filtering7.tsx` | Multi-select facet chips (OR within groups, AND between groups); entrance stagger fade and 12px slide up. |
-| **Invitation Modal** | `Authentication12` | `src/components/pro/Authentication12.tsx` | Focus-trapped modal dialog; 4-bar password strength meter; animated SVG path-length checkmark upon success. |
-| **404 Screen** | `NotFound5` | `src/components/pro/NotFound5.tsx` | Massive 404 with 5 scattered, tilted cards that drop in with spring bounce physics; Esc key triggers home navigation. |
-| **Theme Toggle** | `toggleThemeWithReveal` | `src/lib/theme.ts` | Circular clip-path expansion originating from button click coordinates using the View Transitions API (700ms fallback). |
-| **Smooth Scrolling** | `useLenisScroll` | `src/hooks/useLenisScroll.ts` | Lenis smooth scroll engine; automatically disabled when `prefers-reduced-motion` is active. |
+## 5. Machine Learning Evaluation
+The included benchmark is synthetic and row-split; it is for pipeline
+verification only. No suitably sourced, independently labeled real-world
+brand-impersonation dataset is currently included, so the project makes no
+real-world performance or calibration claims. See
+[`ml/data/README.md`](ml/data/README.md) for the validation-data requirements
+and instructions for group-separated real-world evaluation, and see
+[`ml/models/EVALUATION_REPORT.md`](ml/models/EVALUATION_REPORT.md) for the
+current synthetic benchmark results and limitations.
 
 ---
 
-## 4. Detection Logic & Scoring Engine (`src/data/detection.ts`)
-
-- **Handle Normalization**: Converts handles to lowercase, strips URLs, swaps lookalikes (`rn` $\rightarrow$ `m`, `0` $\rightarrow$ `o`, `1` $\rightarrow$ `l`), and removes misleading suffixes (`official`, `support`, `help`, `care`, `team`, `desk`).
-- **Levenshtein Distance & Substring Anchor**: Evaluates proximity to registered IDs and official brand name. A contained official name scores $\ge 0.90$.
-- **Content Semantic Overlap**: Computes token overlap between submitted profile bio/display name and the registered brand scope.
-- **Credential Validation**: Compares clean 10-digit phone number and verified domain/email.
-- **Strict Cap Rule**: A name-only match is capped at **Medium Anomaly** to eliminate false-positive scam accusations.
-- **Exact Official Records**: Exact matches against certified registered assets immediately return green **Official Identity** status.
-- **Explainable Disclaimers**: Every result features the mandatory notice: *"Results are risk estimates with evidence, never accusations."*
-
----
-
-## 5. Assumptions & Scope Boundaries
-
-1. **Client-side Prototype Engine**: Analysis runs via a deterministic client-side engine in `src/data/detection.ts` mimicking server weights ($0.30$ name, $0.20$ link, $0.15$ bio, $0.15$ credentials, $0.20$ keywords). In production, logo computer vision and distributed search crawlers will run on the backend.
-2. **Zero Platform Scraping**: The app adheres strictly to privacy rules—evaluating only user-submitted inputs (URL, display name, bio text, phone, email) without bypassing platform login walls.
-3. **Phase 2 Monitoring**: As required, background persistent surveillance and push notifications are represented with an honest placeholder explaining upcoming webhooks and cron sweeps.
+## 6. Chrome Browser Extension Setup
+1. Open Chrome and go to `chrome://extensions/`.
+2. Enable **Developer mode** in the upper right.
+3. Click **Load unpacked** and select the `d:\BrandGard\extension` folder.
+4. Ensure the backend is running at `http://localhost:8000`.
+5. Click the BrandGuard icon in the extensions bar to analyze any active tab.

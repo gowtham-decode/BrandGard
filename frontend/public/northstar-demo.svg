@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">Northstar Demo mark</title>
+  <rect width="128" height="128" rx="32" fill="#102a43"/>
+  <path d="M64 18 75 52l35 12-35 12-11 34-11-34-35-12 35-12z" fill="#70e1c1"/>
+  <circle cx="64" cy="64" r="8" fill="#fff"/>
+</svg>

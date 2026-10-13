@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BrandGuard — Demo briefing</title>
+    <style>
+      :root { color-scheme: dark; font-family: Inter, "Segoe UI", sans-serif; background: #081521; color: #edf7f5; }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(ellipse at 80% 15%, #154552 0, transparent 38%), #081521; }
+      main { width: min(100vw, 1200px); height: min(100vh, 675px); min-height: 480px; padding: clamp(32px, 7vw, 84px); display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
+      section { display: none; max-width: 920px; animation: appear .25s ease-out; }
+      section.active { display: block; }
+      .eyebrow { color: #70e1c1; text-transform: uppercase; letter-spacing: .18em; font-size: .78rem; font-weight: 700; }
+      h1 { font-size: clamp(2.8rem, 7vw, 6.4rem); line-height: .98; letter-spacing: -.055em; margin: 20px 0; }
+      h2 { font-size: clamp(2rem, 4.4vw, 4rem); line-height: 1.05; letter-spacing: -.04em; margin: 14px 0 30px; }
+      p, li { color: #bed0d7; font-size: clamp(1rem, 1.7vw, 1.35rem); line-height: 1.55; }
+      ul { padding-left: 1.2em; }
+      li { margin: .5em 0; }
+      .accent { color: #70e1c1; }
+      .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 28px; }
+      .card { border: 1px solid #294550; border-radius: 18px; padding: 20px; background: #102330cc; }
+      .card strong { display: block; color: #70e1c1; margin-bottom: 8px; font-size: 1.1rem; }
+      .card p { font-size: 1rem; margin: 0; }
+      .warning { border-left: 4px solid #f1bd68; padding: 4px 0 4px 18px; }
+      footer { position: absolute; left: clamp(32px, 7vw, 84px); right: clamp(32px, 7vw, 84px); bottom: 26px; display: flex; justify-content: space-between; align-items: center; color: #90aab4; font-size: .9rem; }
+      button { border: 1px solid #45636b; color: #edf7f5; background: #102330; border-radius: 9px; padding: 9px 14px; cursor: pointer; }
+      button:hover, button:focus-visible { border-color: #70e1c1; outline: none; }
+      .controls { display: flex; align-items: center; gap: 10px; }
+      @keyframes appear { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+      @media (max-width: 600px) { main { min-height: 100vh; padding-bottom: 100px; } .grid { grid-template-columns: 1fr; gap: 10px; } .card { padding: 14px; } }
+      @media print { :root { color-scheme: light; background: white; color: #102330; } body { display: block; background: white; } main { width: 100%; height: auto; min-height: 0; display: block; padding: 0; } section, section.active { display: block; width: 100%; height: 100vh; padding: 10vh 8vw; break-after: page; } p, li { color: #294550; } .card { background: white; border-color: #b6c9cc; } footer { display: none; } }
+    </style>
+  </head>
+  <body>
+    <main aria-label="BrandGuard demo slides">
+      <section class="active">
+        <div class="eyebrow">Evidence-led brand protection · Prototype</div>
+        <h1>Meet <span class="accent">BrandGuard.</span></h1>
+        <p>Register official brand assets, assess suspicious submissions, and give analysts evidence they can review.</p>
+      </section>
+      <section>
+        <div class="eyebrow">The problem</div>
+        <h2>Look-alikes deserve <span class="accent">careful review.</span></h2>
+        <p>A similar name is a signal, not a verdict. BrandGuard compares submitted identifiers against reviewed official assets and explains the indicators behind a risk assessment.</p>
+        <div class="grid">
+          <div class="card"><strong>Protect trusted assets</strong><p>Record official accounts, domains, and app identifiers in a brand profile.</p></div>
+          <div class="card"><strong>Explain each result</strong><p>Review similarity, deceptive terms, domain signals, publisher context, and missing evidence.</p></div>
+        </div>
+      </section>
+      <section>
+        <div class="eyebrow">Demo flow · about seven minutes</div>
+        <h2>From brand profile to <span class="accent">reviewed finding.</span></h2>
+        <ul>
+          <li>Register or sign in; show the private workspace.</li>
+          <li>Add a fictional brand and known official assets.</li>
+          <li>Record an analyst verification note for an official asset.</li>
+          <li>Submit a suspicious-looking social profile and app example.</li>
+          <li>Review evidence, uncertainty, and saved history after refresh.</li>
+        </ul>
+      </section>
+      <section>
+        <div class="eyebrow">How it works</div>
+        <h2>Analyst input. <span class="accent">Explainable assessment.</span></h2>
+        <div class="grid">
+          <div class="card"><strong>1 · Register</strong><p>Brand profile and official asset records are scoped to the signed-in workspace.</p></div>
+          <div class="card"><strong>2 · Submit</strong><p>Analyst supplies profile or listing details for a scan.</p></div>
+          <div class="card"><strong>3 · Assess</strong><p>Similarity, normalization, domain and rule signals inform a risk tier and evidence list.</p></div>
+          <div class="card"><strong>4 · Review</strong><p>Analyst records a verdict; scan history persists in the configured database.</p></div>
+        </div>
+      </section>
+      <section>
+        <div class="eyebrow">Honest prototype boundaries</div>
+        <h2>Know what the demo <span class="accent">does not claim.</span></h2>
+        <ul>
+          <li>Social profiles and Google Play listings are analyst-submitted; no social crawling or Google Play query is configured.</li>
+          <li>Apple catalog search can return public listing metadata; that does not verify brand ownership.</li>
+          <li>Google OAuth and binary logo upload are not configured.</li>
+          <li>Website assets support DNS TXT proof; social and app assets still require analyst review.</li>
+          <li>Saved source details improve traceability, but catalog selection metadata is client-reported, not chain-of-custody evidence.</li>
+        </ul>
+      </section>
+      <section>
+        <div class="eyebrow">Takeaway</div>
+        <h2>Signals guide review.<br><span class="accent">Evidence supports decisions.</span></h2>
+        <p>BrandGuard is a local demonstration of brand registration, submitted-signal analysis, evidence review, and persistent history — not an automated enforcement service.</p>
+        <p class="warning">Use the accompanying Demo Guide for setup, sample cases, and presenter notes.</p>
+      </section>
+      <footer>
+        <span>BrandGuard · Demo briefing</span>
+        <div class="controls">
+          <button id="previous" type="button" aria-label="Previous slide">←</button>
+          <span id="count" aria-live="polite">1 / 6</span>
+          <button id="next" type="button" aria-label="Next slide">→</button>
+        </div>
+      </footer>
+    </main>
+    <script>
+      const slides = [...document.querySelectorAll("main > section")];
+      const count = document.querySelector("#count");
+      let current = 0;
+      function show(index) {
+        current = (index + slides.length) % slides.length;
+        slides.forEach((slide, position) => slide.classList.toggle("active", position === current));
+        count.textContent = `${current + 1} / ${slides.length}`;
+      }
+      document.querySelector("#previous").addEventListener("click", () => show(current - 1));
+      document.querySelector("#next").addEventListener("click", () => show(current + 1));
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowRight" || event.key === " ") show(current + 1);
+        if (event.key === "ArrowLeft") show(current - 1);
+      });
+    </script>
+  </body>
+</html>

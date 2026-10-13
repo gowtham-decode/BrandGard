@@ -1,0 +1,75 @@
+{
+  "model_data": {
+    "model_type": "BrandGuardTabularClassifier",
+    "weights": [
+      0.742828063927546,
+      0.9002366526602165,
+      0.6315670324190399,
+      1.298388891286062,
+      1.0462502495555535,
+      1.9258448542052613,
+      0.6685512250248755,
+      -1.986946782842437,
+      -0.40268533029238107,
+      0.6652969059831187,
+      0.725483634614422,
+      -0.5941632184029894,
+      -1.0171679138674394
+    ],
+    "bias": -1.2556068138195289,
+    "feature_names": [
+      "brand_name_similarity",
+      "canonical_similarity",
+      "token_similarity",
+      "has_homoglyphs",
+      "brand_in_handle",
+      "deceptive_keyword_count",
+      "max_official_handle_similarity",
+      "is_exact_official_match",
+      "domain_similarity",
+      "is_punycode_domain",
+      "subdomain_spoof_flag",
+      "uses_https",
+      "evidence_completeness"
+    ],
+    "feature_importances": {
+      "brand_name_similarity": 0.0589,
+      "canonical_similarity": 0.0714,
+      "token_similarity": 0.0501,
+      "has_homoglyphs": 0.103,
+      "brand_in_handle": 0.083,
+      "deceptive_keyword_count": 0.1528,
+      "max_official_handle_similarity": 0.053,
+      "is_exact_official_match": 0.1576,
+      "domain_similarity": 0.0319,
+      "is_punycode_domain": 0.0528,
+      "subdomain_spoof_flag": 0.0576,
+      "uses_https": 0.0471,
+      "evidence_completeness": 0.0807
+    },
+    "learning_rate": 0.08,
+    "l2_penalty": 0.01,
+    "random_seed": 42
+  },
+  "calibrator": {
+    "a": 4.618368887766486,
+    "b": 1.0665074853071481
+  },
+  "feature_names": [
+    "brand_name_similarity",
+    "canonical_similarity",
+    "token_similarity",
+    "has_homoglyphs",
+    "brand_in_handle",
+    "deceptive_keyword_count",
+    "max_official_handle_similarity",
+    "is_exact_official_match",
+    "domain_similarity",
+    "is_punycode_domain",
+    "subdomain_spoof_flag",
+    "uses_https",
+    "evidence_completeness"
+  ],
+  "version": "1.1.0-numpy-logistic",
+  "random_seed": 42
+}

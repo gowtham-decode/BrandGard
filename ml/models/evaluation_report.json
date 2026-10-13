@@ -1,0 +1,19 @@
+{
+  "precision": 1.0,
+  "recall": 0.9643,
+  "f1_score": 0.9818,
+  "pr_auc": 0.9985,
+  "average_precision": 0.9985,
+  "roc_auc": 0.9993,
+  "brier_score": 0.0105,
+  "log_loss": 0.0394,
+  "positive_count": 56,
+  "negative_count": 123,
+  "confusion_matrix": {
+    "tn": 123,
+    "fp": 0,
+    "fn": 2,
+    "tp": 54
+  },
+  "raw_model_brier_score": 0.0321
+}

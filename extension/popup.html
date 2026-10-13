@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BrandGuard Threat Scanner</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="extension-container">
+    <header class="header">
+      <div class="logo-group">
+        <div class="logo-icon">BG</div>
+        <div class="logo-title">
+          <span class="brand-title">BRANDGUARD</span>
+          <span class="brand-sub">Digital Risk Engine</span>
+        </div>
+      </div>
+      <div class="badge status-badge" id="apiStatus">Connected</div>
+    </header>
+
+    <main class="main-content">
+      <!-- Input Panel -->
+      <div id="formSection">
+        <div class="field-group">
+          <label for="targetUrl">Target URL / Account</label>
+          <div class="url-input-wrap">
+            <input type="text" id="targetUrl" placeholder="https://instagram.com/account..." />
+            <button type="button" id="btnUseCurrentTab" title="Use Current Tab URL">Active Tab</button>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group half">
+            <label for="platformSelect">Platform</label>
+            <select id="platformSelect">
+              <option value="instagram">Instagram</option>
+              <option value="x">X / Twitter</option>
+              <option value="telegram">Telegram</option>
+              <option value="facebook">Facebook</option>
+              <option value="website">Website / Domain</option>
+            </select>
+          </div>
+          <div class="field-group half">
+            <label for="brandName">Target Brand</label>
+            <input type="text" id="brandName" placeholder="e.g. BrandGuard" value="BrandGuard" />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="evidenceNotes">Additional Evidence (Optional)</label>
+          <textarea id="evidenceNotes" rows="2" placeholder="e.g. Received unsolicited DM offering crypto refund..."></textarea>
+        </div>
+
+        <div class="privacy-note">
+          <span class="lock-icon">🔒</span>
+          <span>Only the submitted URL & text is transmitted for server-side evaluation. No background browsing history is monitored.</span>
+        </div>
+
+        <button type="button" id="btnSubmitScan" class="btn-primary">
+          <span id="btnText">Analyze Target with AI</span>
+          <span id="spinner" class="spinner hidden"></span>
+        </button>
+      </div>
+
+      <!-- Results View (Hidden Initially) -->
+      <div id="resultSection" class="hidden">
+        <div class="result-header">
+          <div class="risk-pill" id="riskPill">ANALYZED</div>
+          <div class="score-display">
+            <span class="score-number" id="riskScore">0</span>
+            <span class="score-max">/100</span>
+          </div>
+        </div>
+
+        <div class="result-summary" id="resultSummary"></div>
+
+        <div class="evidence-box">
+          <div class="evidence-title">Detected Signals & Rules</div>
+          <ul id="evidenceList" class="evidence-list"></ul>
+        </div>
+
+        <div class="action-buttons">
+          <button type="button" id="btnReset" class="btn-secondary">New Inspection</button>
+          <a href="#" id="viewReportLink" class="btn-view" target="_blank">Full Report &rarr;</a>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <span>BrandGuard AI Protection &bull; v1.0.0</span>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

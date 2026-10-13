@@ -1,24 +1,35 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+venv/
+**/venv/
+**/.venv/
+.pytest_cache/
+**/.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.db
+*.sqlite3
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Node / Frontend
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.output/
+**/.output/
+.env.local
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+
+# IDE
+.vscode/
+.idea/

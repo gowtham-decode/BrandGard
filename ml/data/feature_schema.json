@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BrandGuardFeatureSchema",
+  "version": "1.0.0",
+  "type": "object",
+  "properties": {
+    "brand_name_similarity": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Normalized Levenshtein/RapidFuzz similarity between handle and brand name",
+      "default": 0.0
+    },
+    "canonical_similarity": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Similarity after resolving leetspeak and homoglyphs",
+      "default": 0.0
+    },
+    "token_similarity": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Jaccard/token-set similarity",
+      "default": 0.0
+    },
+    "has_homoglyphs": {
+      "type": "integer",
+      "enum": [0, 1],
+      "description": "Binary flag indicating presence of homoglyph or character substitution",
+      "default": 0
+    },
+    "brand_in_handle": {
+      "type": "integer",
+      "enum": [0, 1],
+      "description": "Binary flag if brand name is an exact substring of handle",
+      "default": 0
+    },
+    "deceptive_keyword_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Count of deceptive keywords (support, official, claims, verify) found",
+      "default": 0
+    },
+    "max_official_handle_similarity": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Maximum similarity to any known official handle",
+      "default": 0.0
+    },
+    "is_exact_official_match": {
+      "type": "integer",
+      "enum": [0, 1],
+      "description": "1 if handle exactly matches an official verified handle, else 0",
+      "default": 0
+    },
+    "domain_similarity": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Similarity between target apex domain and registered official domain",
+      "default": 0.0
+    },
+    "is_punycode_domain": {
+      "type": "integer",
+      "enum": [0, 1],
+      "description": "1 if domain uses xn-- punycode, else 0",
+      "default": 0
+    },
+    "subdomain_spoof_flag": {
+      "type": "integer",
+      "enum": [0, 1],
+      "description": "1 if brand name is in subdomain of an unrelated apex domain",
+      "default": 0
+    },
+    "uses_https": {
+      "type": "integer",
+      "enum": [0, 1],
+      "description": "1 if target URL uses HTTPS, else 0",
+      "default": 1
+    },
+    "evidence_completeness": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Ratio of available non-missing features",
+      "default": 1.0
+    }
+  },
+  "required": [
+    "brand_name_similarity",
+    "canonical_similarity",
+    "token_similarity",
+    "has_homoglyphs",
+    "brand_in_handle",
+    "deceptive_keyword_count",
+    "max_official_handle_similarity",
+    "is_exact_official_match",
+    "domain_similarity",
+    "is_punycode_domain",
+    "subdomain_spoof_flag",
+    "uses_https",
+    "evidence_completeness"
+  ]
+}
